@@ -1,0 +1,9 @@
+*.vcxproj.user
+*.opensdf
+*.sdf
+*.filters
+*.suo
+Debug
+Release
+Debug_GL
+Release_GL
