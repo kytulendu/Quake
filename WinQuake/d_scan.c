@@ -249,6 +249,19 @@ void Turbulent8 (espan_t *pspan)
 
 #if	!id386
 
+int kernel[2][2][2] =
+{
+   {
+        {16384,0},
+        {49152,32768}
+   }
+   ,
+   {
+      {32768,49152},
+      {0,16384}
+   }
+};
+
 /*
 =============
 D_DrawSpans8
@@ -366,16 +379,42 @@ void D_DrawSpans8 (espan_t *pspan)
 					tstep = (tnext - t) / (spancount - 1);
 				}
 			}
-
-			do
+			if (sw_texfilt.value == 0.0f)
 			{
-				*pdest++ = *(pbase + (s >> 16) + (t >> 16) * cachewidth);
-				s += sstep;
-				t += tstep;
-			} while (--spancount > 0);
+				do
+				{
+					*pdest++ = *(pbase + (s >> 16) + (t >> 16) * cachewidth);
+					s += sstep;
+					t += tstep;
+				} while (--spancount > 0);
+			}
+			else if (sw_texfilt.value == 1.0f)
+			{
+				do
+				{
+					int idiths = s;
+					int iditht = t;
 
-			s = snext;
-			t = tnext;
+					int X = (pspan->u + spancount) & 1;
+					int Y = (pspan->v)&1;
+
+					//Using the kernel
+					idiths += kernel[X][Y][0];
+					iditht += kernel[X][Y][1];
+
+					idiths = idiths >> 16;
+					idiths = idiths ? idiths -1 : idiths;
+
+
+					iditht = iditht >> 16;
+					iditht = iditht ? iditht -1 : iditht;
+
+
+					*pdest++ = *(pbase + idiths + iditht * cachewidth);
+					s += sstep;
+					t += tstep;
+				} while (--spancount > 0);
+			}
 
 		} while (count > 0);
 

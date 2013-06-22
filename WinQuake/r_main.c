@@ -137,6 +137,9 @@ cvar_t	r_numedges = {"r_numedges", "0"};
 cvar_t	r_aliastransbase = {"r_aliastransbase", "200"};
 cvar_t	r_aliastransadj = {"r_aliastransadj", "100"};
 
+/*Control kernel texture sampling*/
+cvar_t	sw_texfilt = {"sw_texfilt", "1"};
+
 extern cvar_t	scr_fov;
 
 void CreatePassages (void);
@@ -213,6 +216,8 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_numedges);
 	Cvar_RegisterVariable (&r_aliastransbase);
 	Cvar_RegisterVariable (&r_aliastransadj);
+
+	Cvar_RegisterVariable (&sw_texfilt);
 
 	Cvar_SetValue ("r_maxedges", (float)NUMSTACKEDGES);
 	Cvar_SetValue ("r_maxsurfs", (float)NUMSTACKSURFACES);
